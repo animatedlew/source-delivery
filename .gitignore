@@ -1,0 +1,10 @@
+env
+.venv
+*.zip
+repos/*
+.vscode
+archive/sources-*
+__pycache__
+*.egg-info
+pip-wheel-metadata/
+

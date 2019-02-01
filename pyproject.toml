@@ -1,0 +1,49 @@
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+py36 = true
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+
+  # The following are specific to Black, you probably don't want those.
+  | blib2to3
+  | tests/data
+)/
+'''
+
+[tool.poetry]
+name = "source-delivery"
+version = "0.1.0"
+description = "A utility that helps to archive a list of remote repos."
+authors = ["Lewis Moronta <lewis.moronta@gmail.com>"]
+license = "MIT"
+packages = [
+  { include="scripts", from="." },
+]
+
+[tool.poetry.scripts]
+archive = "scripts.archive:archive"
+clean = "scripts.misc:clean_archive"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+pyyaml = "^3.13"
+gitpython = "^2.1"
+
+[tool.poetry.dev-dependencies]
+black = "=18.9b0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

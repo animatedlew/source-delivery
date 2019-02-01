@@ -1,0 +1,6 @@
+repo_path: repos
+zip_path: archive
+zip_name: sources
+repos:
+  mandelbrotfx: git@github.com:animatedlew/mandelbrotfx.git
+
