@@ -20,13 +20,14 @@ def clean_repos(repo_path):
         [rmtree(repo.path) for repo in repos if repo.is_dir()]
 
 
-def clone_repos(repo_path, config):
+def clone_repos(repo_path, config, depth=1):
     repos = config[repo_path]
     print('Loading', end='')
     for name in repos:
         print(end='.')  # loading indicator
         stdout.flush()
-        Repo.clone_from(repos[name], os.path.join(repo_path, name))
+        Repo.clone_from(repos[name], os.path.join(repo_path, name), depth=depth)
+        rmtree(os.path.join(repo_path, name, '.git'))
     print()
 
 
@@ -41,12 +42,12 @@ def zip_repos(path, config):
     clean_repos(path)
 
 
-def archive():
+def archive(depth=1):
     print()
     config = load_config()
     path = config['repo_path']
     clean_repos(path)
-    clone_repos(path, config)
+    clone_repos(path, config, depth)
     zip_repos(path, config)
     print('Archive created.', end='\n\n')
 
