@@ -7,4 +7,4 @@ archive/sources-*
 __pycache__
 *.egg-info
 pip-wheel-metadata/
-
+.DS_Store
