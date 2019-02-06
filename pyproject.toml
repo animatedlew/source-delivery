@@ -24,7 +24,7 @@ exclude = '''
 
 [tool.poetry]
 name = "source-delivery"
-version = "0.1.0"
+version = "0.2.0"
 description = "A utility that helps to archive a list of remote repos."
 authors = ["Lewis Moronta <lewis.moronta@gmail.com>"]
 license = "MIT"
