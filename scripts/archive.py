@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 
-import sys, os, shutil
-from sys import stdout
+import argparse
+import os
+import shutil
+import subprocess
+import sys
+from datetime import datetime
 from os import scandir
-from shutil import make_archive, copyfile, rmtree
+from shutil import copyfile, make_archive, rmtree
+from sys import stdout
+from time import sleep
+
 from git import Repo
 from yaml import load
-from time import sleep
-from datetime import datetime
 
 
 def load_config():
@@ -22,11 +27,17 @@ def clean_repos(repo_path):
 
 def clone_repos(repo_path, config, depth=1):
     repos = config[repo_path]
+    exclude_string = config['exclude_string']
     print('Loading', end='')
     for name in repos:
         print(end='.')  # loading indicator
         stdout.flush()
-        Repo.clone_from(repos[name], os.path.join(repo_path, name), depth=depth)
+        destination_path = os.path.join(repo_path, name)
+        Repo.clone_from(repos[name], destination_path, depth=depth)
+        try:
+            subprocess.run(f"find . -name '*{exclude_string}*' -exec rm -rf {{}} \;")
+        except FileNotFoundError:
+            print(f'No files with name including {exclude_string} found')
         rmtree(os.path.join(repo_path, name, '.git'))
     print()
 
@@ -34,6 +45,7 @@ def clone_repos(repo_path, config, depth=1):
 def zip_repos(path, config):
     print('Compressing.')
     now = datetime.now()
+    dir_path = os.getcwd()
     zip_name = f'{config["zip_name"]}-{now.strftime("%m%d%Y")}'
     archive = os.path.join(config['zip_path'], zip_name)
     make_archive(archive, 'zip', 'repos')
