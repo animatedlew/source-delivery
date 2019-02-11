@@ -6,7 +6,7 @@ import shutil
 import subprocess
 import sys
 from datetime import datetime
-from os import scandir
+from os import scandir, remove
 from shutil import copyfile, make_archive, rmtree
 from sys import stdout
 from time import sleep
@@ -35,9 +35,19 @@ def clone_repos(repo_path, config, depth=1):
         destination_path = os.path.join(repo_path, name)
         Repo.clone_from(repos[name], destination_path, depth=depth)
         try:
-            subprocess.run(f"find . -name '*{exclude_string}*' -exec rm -rf {{}} \;")
+            subprocess.run(
+                f"find {destination_path} -name '*{exclude_string}*' -exec rm -rf {{}} \;",
+                shell=True,
+            )
         except FileNotFoundError:
             print(f'No files with name including {exclude_string} found')
+        matching_process = subprocess.run(
+            f"find {destination_path} -exec grep -rl {exclude_string} {{}} \;",
+            shell=True,
+            stdout=subprocess.PIPE,
+        )
+        matching_files = {file_name for file_name in matching_process.stdout.decode('utf-8').split('\n') if file_name}
+        deleted_files = [remove(file_name) for file_name in matching_files]
         rmtree(os.path.join(repo_path, name, '.git'))
     print()
 
