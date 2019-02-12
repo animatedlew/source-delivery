@@ -42,7 +42,7 @@ def clone_repos(repo_path, config, depth=1):
         except FileNotFoundError:
             print(f'No files with name including {exclude_string} found')
         matching_process = subprocess.run(
-            f"find {destination_path} -exec grep -rl {exclude_string} {{}} \;",
+            f"find {destination_path} -exec grep -ril {exclude_string} {{}} \;",
             shell=True,
             stdout=subprocess.PIPE,
         )
